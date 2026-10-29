@@ -36,6 +36,7 @@ export const SqlPracticeView: React.FC<SqlPracticeViewProps> = ({
   const [mistakes, setMistakes] = useState('');
   const [timeTaken, setTimeTaken] = useState(20);
   const [status, setStatus] = useState<'Solved Correct' | 'Hint Required' | 'Incorrect' | 'Attempted'>('Solved Correct');
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const sqlTopics = [
     'SELECT, WHERE and ORDER BY',
@@ -225,21 +226,29 @@ export const SqlPracticeView: React.FC<SqlPracticeViewProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
                 Difficulty
               </label>
-              <select
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]"
-              >
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
+              <div className="flex gap-1.5">
+                {(['Easy', 'Medium', 'Hard'] as const).map((diff) => (
+                  <button
+                    key={diff}
+                    type="button"
+                    onClick={() => setDifficulty(diff)}
+                    className={`flex-1 py-1.5 px-2 text-xs font-mono border transition-all ${
+                      difficulty === diff
+                        ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] border-[var(--btn-primary-bg)] font-medium'
+                        : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] border-[var(--border-subtle)] hover:border-[var(--text-muted)]'
+                    }`}
+                  >
+                    {diff}
+                  </button>
+                ))}
+              </div>
             </div>
+
             <div>
               <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
                 Result Status
@@ -247,78 +256,81 @@ export const SqlPracticeView: React.FC<SqlPracticeViewProps> = ({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as any)}
-                className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]"
+                className="w-full px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-xs"
               >
-                <option value="Solved Correct">Solved Correct</option>
-                <option value="Hint Required">Hint Required</option>
-                <option value="Incorrect">Incorrect</option>
-                <option value="Attempted">Attempted</option>
+                <option value="Solved Correct">✓ Solved Correct</option>
+                <option value="Hint Required">⚡ Hint Required</option>
+                <option value="Attempted">⏳ Attempted</option>
+                <option value="Incorrect">✗ Incorrect</option>
               </select>
             </div>
+
             <div>
               <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
-                Number of Attempts
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={attempts}
-                onChange={(e) => setAttempts(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[var(--text-primary)]"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
-                Time Taken (min)
+                Time Taken (minutes)
               </label>
               <input
                 type="number"
                 min="1"
                 value={timeTaken}
                 onChange={(e) => setTimeTaken(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[var(--text-primary)]"
+                className="w-full px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[var(--text-primary)] text-xs"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
-              Source URL (LeetCode / HackerRank)
-            </label>
-            <input
-              type="text"
-              value={sourceUrl}
-              onChange={(e) => setSourceUrl(e.target.value)}
-              placeholder="https://leetcode.com/problems/..."
-              className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]"
-            />
+            <button
+              type="button"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="text-xs text-[var(--color-ember-orange)] font-medium hover:underline flex items-center gap-1.5 py-1"
+            >
+              <span>{showAdvanced ? '▼ Hide detailed query & notes' : '▶ Add SQL query, link or mistake notes (optional)'}</span>
+            </button>
           </div>
 
-          <div>
-            <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
-              SQL Query Attempt
-            </label>
-            <textarea
-              value={queryAttempt}
-              onChange={(e) => setQueryAttempt(e.target.value)}
-              rows={4}
-              placeholder="SELECT name, DENSE_RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) as rnk FROM ..."
-              className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-[var(--text-primary)]"
-            />
-          </div>
+          {showAdvanced && (
+            <div className="space-y-3 pt-2 border-t border-[var(--border-subtle)]/60">
+              <div>
+                <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
+                  Source URL (LeetCode / HackerRank)
+                </label>
+                <input
+                  type="text"
+                  value={sourceUrl}
+                  onChange={(e) => setSourceUrl(e.target.value)}
+                  placeholder="https://leetcode.com/problems/..."
+                  className="w-full px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-xs"
+                />
+              </div>
 
-          <div>
-            <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
-              Mistakes / Logic Hurdles Encountered
-            </label>
-            <input
-              type="text"
-              value={mistakes}
-              onChange={(e) => setMistakes(e.target.value)}
-              placeholder="E.g., Used RANK() instead of DENSE_RANK(); forgot NULL values handling."
-              className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)]"
-            />
-          </div>
+              <div>
+                <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
+                  SQL Query Attempt
+                </label>
+                <textarea
+                  value={queryAttempt}
+                  onChange={(e) => setQueryAttempt(e.target.value)}
+                  rows={3}
+                  placeholder="SELECT name, DENSE_RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) FROM ..."
+                  className="w-full px-3 py-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] font-mono text-xs text-[var(--text-primary)]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-[var(--text-secondary)] mb-1">
+                  Mistakes / Logic Notes
+                </label>
+                <input
+                  type="text"
+                  value={mistakes}
+                  onChange={(e) => setMistakes(e.target.value)}
+                  placeholder="E.g., Forgot GROUP BY, handling NULL values."
+                  className="w-full px-3 py-1.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] text-xs"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-2 border-t border-[var(--border-subtle)]">
             <button

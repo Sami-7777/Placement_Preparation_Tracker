@@ -6,6 +6,7 @@ import { DailyTasksView } from './views/DailyTasksView';
 import { DsaPatternsView } from './views/DsaPatternsView';
 import { SqlPracticeView } from './views/SqlPracticeView';
 import { CoreCsView } from './views/CoreCsView';
+import { AptitudeView } from './views/AptitudeView';
 import { PythonRevisionView } from './views/PythonRevisionView';
 import { PlacementView } from './views/PlacementView';
 import { ReportsView } from './views/ReportsView';
@@ -216,10 +217,25 @@ export function App() {
     await loadData(selectedDate);
   };
 
-  // Task Handlers
+  // Task Handlers — optimistic toggle for instant UI feedback
   const handleToggleTask = async (taskId: number) => {
-    await api.toggleTask(taskId);
-    await loadData(selectedDate);
+    // Optimistic update: flip the task locally immediately
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId
+          ? { ...t, is_completed: !t.is_completed, status: !t.is_completed ? 'Completed' : 'In Progress' }
+          : t
+      )
+    );
+    try {
+      await api.toggleTask(taskId);
+      // Sync from server to ensure accuracy
+      const updated = await api.getTasks(selectedDate);
+      setTasks(updated);
+    } catch {
+      // Revert on error by reloading
+      await loadData(selectedDate);
+    }
   };
 
   const handleUpdateTaskDuration = async (taskId: number, actualMinutes: number, notes?: string) => {
@@ -290,8 +306,21 @@ export function App() {
 
   // Core CS Handlers
   const handleToggleCoreCs = async (id: number) => {
-    await api.toggleCoreCsTopic(id);
-    await loadData(selectedDate);
+    // Optimistic toggle
+    setCoreCsTopics((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? { ...t, is_completed: !t.is_completed, status: !t.is_completed ? 'Revised' : 'In Progress' }
+          : t
+      )
+    );
+    try {
+      await api.toggleCoreCsTopic(id);
+      const updated = await api.getCoreCsTopics();
+      setCoreCsTopics(updated);
+    } catch {
+      await loadData(selectedDate);
+    }
   };
 
   const handleUpdateCoreCs = async (id: number, data: Partial<CoreCsTopic>) => {
@@ -427,6 +456,10 @@ export function App() {
               onToggleTopic={handleToggleCoreCs}
               onUpdateTopic={handleUpdateCoreCs}
             />
+          )}
+
+          {currentTab === 'aptitude' && (
+            <AptitudeView />
           )}
 
           {currentTab === 'python_fs' && (
