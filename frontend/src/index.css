@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-graphite: #202020;
+    --color-canvas-white: #ffffff;
+    --color-ash: #efefef;
+    --color-fog: #f5f5f5;
+    --color-ivory: #ebe6dd;
+    --color-steel: #4d4d4d;
+    --color-slate: #828282;
+    --color-mist: #e8e8e8;
+    --color-ember-orange: #ff682c;
+    --color-brass: #816729;
+
+    --bg-page: #ffffff;
+    --bg-surface: #efefef;
+    --bg-surface-nested: #f5f5f5;
+    --bg-card: #ffffff;
+    --bg-accent-wash: #ebe6dd;
+    --border-subtle: #e8e8e8;
+    --text-primary: #202020;
+    --text-secondary: #4d4d4d;
+    --text-muted: #828282;
+    --btn-primary-bg: #202020;
+    --btn-primary-text: #ffffff;
+    --card-border: #e8e8e8;
+  }
+
+  .dark {
+    --color-graphite: #f3f3f3;
+    --color-canvas-white: #121212;
+    --color-ash: #1a1a1a;
+    --color-fog: #222222;
+    --color-ivory: #26231e;
+    --color-steel: #b0b0b0;
+    --color-slate: #7a7a7a;
+    --color-mist: #2d2d2d;
+    --color-ember-orange: #ff682c;
+    --color-brass: #d4a34b;
+
+    --bg-page: #121212;
+    --bg-surface: #1a1a1a;
+    --bg-surface-nested: #222222;
+    --bg-card: #161616;
+    --bg-accent-wash: #26231e;
+    --border-subtle: #2d2d2d;
+    --text-primary: #f3f3f3;
+    --text-secondary: #b0b0b0;
+    --text-muted: #7a7a7a;
+    --btn-primary-bg: #f3f3f3;
+    --btn-primary-text: #121212;
+    --card-border: #2a2a2a;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    letter-spacing: -0.025em;
+    font-weight: 400;
+  }
+}
+
+/* Ventriloc Asymmetric Radius Card: 6px 0px 0px */
+.asymmetric-card {
+  border-radius: 6px 0px 0px 0px;
+}
+
+/* Sharp CTA Button: 0px radius */
+.btn-sharp {
+  border-radius: 0px;
+}
+
+/* Nav Pill Container: 200px */
+.nav-pill {
+  border-radius: 200px;
+}
+
+/* Tag Pill: 20px */
+.tag-pill {
+  border-radius: 20px;
+}
+
+/* Link with orange underline */
+.link-ember {
+  text-decoration: underline;
+  text-decoration-color: var(--color-ember-orange);
+  text-underline-offset: 3px;
+}
